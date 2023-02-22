@@ -258,3 +258,45 @@ ggplot(dat_study1) +
 
 ![Histogram of Individual
 Payments](replication-survey1_files/figure-gfm/unnamed-chunk-4-1.png)
+
+## Figure A1.1
+
+To create figure A1.1, convert income into a factor variable with proper
+labels, then generate counts, and plot the data.
+
+``` r
+income_labels <- c("less than 150 Euro",
+                   "150 to less than 400 Euro",
+                   "400 to less than 1000 Euro",
+                   "1000 to less than 1500 Euro",
+                   "1500 to less than 2000 Euro",
+                   "2000 to less than 2500 Euro",
+                   "2500 to less than 3000 Euro",
+                   "3000 to less than 3500 Euro",
+                   "3500 to less than 4000 Euro",
+                   "4000 to less than 4500 Euro",
+                   "4500 to less than 5000 Euro",
+                   "5000 to less than 5500 Euro",
+                   "5500 to less than 6000 Euro",
+                   "5000 to less than 7500 Euro",
+                   "7500 Euro and more")
+
+xx <- dat_study1 %>%
+    mutate(income = factor(dat_study1$income, 
+                           labels = income_labels))
+
+counts <- xx %>%
+    count(income, priming) %>%
+    mutate(pos = case_when(priming == "primed poor" ~ 0.9,
+                           priming == "primed rich" ~ 0.1))
+
+xx %>%
+    ggplot(aes(x = as.factor(income), group = priming)) + 
+    geom_bar(aes(fill = priming), position = "fill") + 
+    geom_text(data = counts, aes(y = pos, label = n)) + 
+    coord_flip() + 
+    theme_bw() + 
+    ylab("Proportion") + xlab("Income Group")
+```
+
+![](replication-survey1_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
