@@ -26,6 +26,10 @@ library(tidyverse)
     ## ✖ dplyr::lag()     masks stats::lag()
     ## ℹ Use the ]8;;http://conflicted.r-lib.org/conflicted package]8;; to force all conflicts to become errors
 
+``` r
+library(gt)
+```
+
 We don’t need to set paths, and assume folks will follow the practice of
 using an RStudio project with the project folder as the main parent
 folder. All paths are thus local to that.
@@ -88,32 +92,443 @@ dat_poor <- dat_study1 %>%
 
 summary_rich <- make_summary_table(dat_rich)
 summary_poor <- make_summary_table(dat_poor)
+
+left_join(summary_rich, summary_poor, by = "set", 
+          suffix = c("", ".")) %>%
+    mutate_at(vars(-"set"), ~(round(., digits = 1))) %>%
+    rename(variable = set) %>%
+    gt() %>%
+    tab_spanner(label = "primed rich", 
+                columns = c("obs", "mean", "sd")) %>%
+    tab_spanner(label = "primed poor", 
+                columns = c("obs.", "mean.", "sd."))
 ```
 
-### Primed rich
+<div id="dmgtazjdcu" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>html {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
+}
 
-| set           |  obs |   mean |     sd |
-|:--------------|-----:|-------:|-------:|
-| income        | 1509 | 2075.3 | 1406.0 |
-| male          | 2253 |   51.7 |   50.0 |
-| age           | 2252 |   50.6 |   15.6 |
-| edu           | 2268 |    2.0 |    1.4 |
-| married       | 2393 |   52.8 |   49.9 |
-| student       | 2393 |    4.4 |   20.6 |
-| religiousness | 2243 |    4.4 |    3.0 |
-| east          | 2392 |   19.4 |   39.5 |
-| leftright     | 1994 |    5.3 |    2.0 |
+#dmgtazjdcu .gt_table {
+  display: table;
+  border-collapse: collapse;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
 
-### Primed poor
+#dmgtazjdcu .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
 
-| set           |  obs |   mean |     sd |
-|:--------------|-----:|-------:|-------:|
-| income        | 1505 | 2050.0 | 1381.5 |
-| male          | 2254 |   50.8 |   50.0 |
-| age           | 2255 |   49.7 |   15.6 |
-| edu           | 2270 |    2.0 |    1.4 |
-| married       | 2392 |   50.3 |   50.0 |
-| student       | 2392 |    4.7 |   21.1 |
-| religiousness | 2263 |    4.4 |    3.0 |
-| east          | 2391 |   19.2 |   39.4 |
-| leftright     | 2014 |    5.2 |    1.9 |
+#dmgtazjdcu .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#dmgtazjdcu .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 0;
+  padding-bottom: 6px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#dmgtazjdcu .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#dmgtazjdcu .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#dmgtazjdcu .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#dmgtazjdcu .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#dmgtazjdcu .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#dmgtazjdcu .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#dmgtazjdcu .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#dmgtazjdcu .gt_group_heading {
+  padding: 8px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#dmgtazjdcu .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#dmgtazjdcu .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#dmgtazjdcu .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#dmgtazjdcu .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#dmgtazjdcu .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 12px;
+}
+
+#dmgtazjdcu .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#dmgtazjdcu .gt_first_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+}
+
+#dmgtazjdcu .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#dmgtazjdcu .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#dmgtazjdcu .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#dmgtazjdcu .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#dmgtazjdcu .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#dmgtazjdcu .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding: 4px;
+}
+
+#dmgtazjdcu .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#dmgtazjdcu .gt_sourcenote {
+  font-size: 90%;
+  padding: 4px;
+}
+
+#dmgtazjdcu .gt_left {
+  text-align: left;
+}
+
+#dmgtazjdcu .gt_center {
+  text-align: center;
+}
+
+#dmgtazjdcu .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#dmgtazjdcu .gt_font_normal {
+  font-weight: normal;
+}
+
+#dmgtazjdcu .gt_font_bold {
+  font-weight: bold;
+}
+
+#dmgtazjdcu .gt_font_italic {
+  font-style: italic;
+}
+
+#dmgtazjdcu .gt_super {
+  font-size: 65%;
+}
+
+#dmgtazjdcu .gt_footnote_marks {
+  font-style: italic;
+  font-weight: normal;
+  font-size: 65%;
+}
+</style>
+<table class="gt_table">
+  
+  <thead class="gt_col_headings">
+    <tr>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="2" colspan="1">variable</th>
+      <th class="gt_center gt_columns_top_border gt_column_spanner_outer" rowspan="1" colspan="3">
+        <span class="gt_column_spanner">primed rich</span>
+      </th>
+      <th class="gt_center gt_columns_top_border gt_column_spanner_outer" rowspan="1" colspan="3">
+        <span class="gt_column_spanner">primed poor</span>
+      </th>
+    </tr>
+    <tr>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1">obs</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1">mean</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1">sd</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1">obs.</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1">mean.</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1">sd.</th>
+    </tr>
+  </thead>
+  <tbody class="gt_table_body">
+    <tr><td class="gt_row gt_left">income</td>
+<td class="gt_row gt_right">1509</td>
+<td class="gt_row gt_right">2075.3</td>
+<td class="gt_row gt_right">1406.0</td>
+<td class="gt_row gt_right">1505</td>
+<td class="gt_row gt_right">2050.0</td>
+<td class="gt_row gt_right">1381.5</td></tr>
+    <tr><td class="gt_row gt_left">male</td>
+<td class="gt_row gt_right">2253</td>
+<td class="gt_row gt_right">51.7</td>
+<td class="gt_row gt_right">50.0</td>
+<td class="gt_row gt_right">2254</td>
+<td class="gt_row gt_right">50.8</td>
+<td class="gt_row gt_right">50.0</td></tr>
+    <tr><td class="gt_row gt_left">age</td>
+<td class="gt_row gt_right">2252</td>
+<td class="gt_row gt_right">50.6</td>
+<td class="gt_row gt_right">15.6</td>
+<td class="gt_row gt_right">2255</td>
+<td class="gt_row gt_right">49.7</td>
+<td class="gt_row gt_right">15.6</td></tr>
+    <tr><td class="gt_row gt_left">edu</td>
+<td class="gt_row gt_right">2268</td>
+<td class="gt_row gt_right">2.0</td>
+<td class="gt_row gt_right">1.4</td>
+<td class="gt_row gt_right">2270</td>
+<td class="gt_row gt_right">2.0</td>
+<td class="gt_row gt_right">1.4</td></tr>
+    <tr><td class="gt_row gt_left">married</td>
+<td class="gt_row gt_right">2393</td>
+<td class="gt_row gt_right">52.8</td>
+<td class="gt_row gt_right">49.9</td>
+<td class="gt_row gt_right">2392</td>
+<td class="gt_row gt_right">50.3</td>
+<td class="gt_row gt_right">50.0</td></tr>
+    <tr><td class="gt_row gt_left">student</td>
+<td class="gt_row gt_right">2393</td>
+<td class="gt_row gt_right">4.4</td>
+<td class="gt_row gt_right">20.6</td>
+<td class="gt_row gt_right">2392</td>
+<td class="gt_row gt_right">4.7</td>
+<td class="gt_row gt_right">21.1</td></tr>
+    <tr><td class="gt_row gt_left">religiousness</td>
+<td class="gt_row gt_right">2243</td>
+<td class="gt_row gt_right">4.4</td>
+<td class="gt_row gt_right">3.0</td>
+<td class="gt_row gt_right">2263</td>
+<td class="gt_row gt_right">4.4</td>
+<td class="gt_row gt_right">3.0</td></tr>
+    <tr><td class="gt_row gt_left">east</td>
+<td class="gt_row gt_right">2392</td>
+<td class="gt_row gt_right">19.4</td>
+<td class="gt_row gt_right">39.5</td>
+<td class="gt_row gt_right">2391</td>
+<td class="gt_row gt_right">19.2</td>
+<td class="gt_row gt_right">39.4</td></tr>
+    <tr><td class="gt_row gt_left">leftright</td>
+<td class="gt_row gt_right">1994</td>
+<td class="gt_row gt_right">5.3</td>
+<td class="gt_row gt_right">2.0</td>
+<td class="gt_row gt_right">2014</td>
+<td class="gt_row gt_right">5.2</td>
+<td class="gt_row gt_right">1.9</td></tr>
+  </tbody>
+  
+  
+</table>
+</div>

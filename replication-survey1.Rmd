@@ -11,6 +11,7 @@ First, load up the necessary packages. We are operating in interactive mode, so 
 library(readstata13)
 library(psych)
 library(tidyverse)
+library(gt)
 ```
 
 We don't need to set paths, and assume folks will follow the practice of using an RStudio project with the project folder as the main parent folder. All paths are thus local to that.
@@ -72,16 +73,17 @@ dat_poor <- dat_study1 %>%
 
 summary_rich <- make_summary_table(dat_rich)
 summary_poor <- make_summary_table(dat_poor)
-```
 
-### Primed rich
-```{r, echo = FALSE}
-knitr::kable(summary_rich, digits = 1)
-```
-
-### Primed poor
-```{r, echo = FALSE}
-knitr::kable(summary_poor, digits = 1)
+left_join(summary_rich, summary_poor, by = "set", 
+          suffix = c("", ".")) %>%
+    mutate_at(vars(-"set"), ~(round(., digits = 1))) %>%
+    rename(variable = set) %>%
+    gt() %>%
+    tab_spanner(label = "primed rich", 
+                columns = c("obs", "mean", "sd")) %>%
+    tab_spanner(label = "primed poor", 
+                columns = c("obs.", "mean.", "sd."))
+    
 ```
 
 
