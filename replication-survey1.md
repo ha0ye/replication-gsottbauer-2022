@@ -63,8 +63,8 @@ dat_study1 <- df_study1 %>%
 ## Generate Table 1 (sample summary statistics - survey 1)
 
 ``` r
-summary_vars <- c("income", "male", "age", "edu", "student", 
-                  "married", "religiousness", "east", "leftright")
+summary_vars <- c("income", "male", "age", "edu", "married", 
+                  "student", "religiousness", "east", "leftright")
 
 # define function to count number of not NA values
 obs <- function(x, na.rm) {sum(is.finite(x))}
@@ -98,8 +98,8 @@ summary_poor <- make_summary_table(dat_poor)
 | male          | 2253 |   51.7 |   50.0 |
 | age           | 2252 |   50.6 |   15.6 |
 | edu           | 2268 |    2.0 |    1.4 |
-| student       | 2393 |    4.4 |   20.6 |
 | married       | 2393 |   52.8 |   49.9 |
+| student       | 2393 |    4.4 |   20.6 |
 | religiousness | 2243 |    4.4 |    3.0 |
 | east          | 2392 |   19.4 |   39.5 |
 | leftright     | 1994 |    5.3 |    2.0 |
@@ -112,8 +112,8 @@ summary_poor <- make_summary_table(dat_poor)
 | male          | 2254 |   50.8 |   50.0 |
 | age           | 2255 |   49.7 |   15.6 |
 | edu           | 2270 |    2.0 |    1.4 |
-| student       | 2392 |    4.7 |   21.1 |
 | married       | 2392 |   50.3 |   50.0 |
+| student       | 2392 |    4.7 |   21.1 |
 | religiousness | 2263 |    4.4 |    3.0 |
 | east          | 2391 |   19.2 |   39.4 |
 | leftright     | 2014 |    5.2 |    1.9 |

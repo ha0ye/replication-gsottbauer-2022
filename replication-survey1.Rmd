@@ -47,8 +47,8 @@ dat_study1 <- df_study1 %>%
 
 ## Generate Table 1 (sample summary statistics - survey 1)
 ```{r}
-summary_vars <- c("income", "male", "age", "edu", "student", 
-                  "married", "religiousness", "east", "leftright")
+summary_vars <- c("income", "male", "age", "edu", "married", 
+                  "student", "religiousness", "east", "leftright")
 
 # define function to count number of not NA values
 obs <- function(x, na.rm) {sum(is.finite(x))}
