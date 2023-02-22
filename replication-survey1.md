@@ -194,3 +194,30 @@ left_join(summary_rich, summary_poor, by = "set",
   
   
 </table>
+
+## Wilcox-Rank-Sum tests for Table 1
+
+``` r
+U_test <- function(var, df1 = dat_rich, df2 = dat_poor)
+{
+    wilcox.test(x = df1[[var]], 
+                y = df2[[var]], 
+                paired = FALSE)
+}
+
+p_vals <- tibble(variable = summary_vars, 
+             results = map(variable, U_test), 
+             p_value = map_dbl(results, pluck, "p.value"))
+```
+
+| variable      |   p_value |
+|:--------------|----------:|
+| income        | 0.7763230 |
+| male          | 0.5609766 |
+| age           | 0.0667285 |
+| edu           | 0.2621803 |
+| married       | 0.0907269 |
+| student       | 0.6751849 |
+| religiousness | 0.9615305 |
+| east          | 0.9181032 |
+| leftright     | 0.2445970 |

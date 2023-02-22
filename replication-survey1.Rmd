@@ -86,4 +86,22 @@ left_join(summary_rich, summary_poor, by = "set",
     as_raw_html()
 ```
 
+## Wilcox-Rank-Sum tests for Table 1 
+
+```{r summary tests survey 1}
+U_test <- function(var, df1 = dat_rich, df2 = dat_poor)
+{
+    wilcox.test(x = df1[[var]], 
+                y = df2[[var]], 
+                paired = FALSE)
+}
+
+p_vals <- tibble(variable = summary_vars, 
+             results = map(variable, U_test), 
+             p_value = map_dbl(results, pluck, "p.value"))
+```
+
+```{r, echo = FALSE}
+knitr::kable(p_vals[, c("variable", "p_value")])
+```
 
