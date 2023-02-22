@@ -12,6 +12,7 @@ library(readstata13)
 library(psych)
 library(tidyverse)
 library(gt)
+library(pander)
 ```
 
 We don't need to set paths, and assume folks will follow the practice of using an RStudio project with the project folder as the main parent folder. All paths are thus local to that.
@@ -73,17 +74,10 @@ dat_poor <- dat_study1 %>%
 
 summary_rich <- make_summary_table(dat_rich)
 summary_poor <- make_summary_table(dat_poor)
-
-left_join(summary_rich, summary_poor, by = "set", 
-          suffix = c("", ".")) %>%
+summary_out <- left_join(summary_rich, summary_poor, by = "set", 
+                         suffix = c("", ".")) %>%
     mutate_at(vars(-"set"), ~(round(., digits = 1))) %>%
-    rename(variable = set) %>%
-    gt() %>%
-    tab_spanner(label = "primed rich", 
-                columns = c("obs", "mean", "sd")) %>%
-    tab_spanner(label = "primed poor", 
-                columns = c("obs.", "mean.", "sd.")) %>%
-    as_raw_html()
+    rename(variable = set)
 ```
 
 ## Wilcox-Rank-Sum tests for Table 1 
@@ -96,12 +90,25 @@ U_test <- function(var, df1 = dat_rich, df2 = dat_poor)
                 paired = FALSE)
 }
 
-p_vals <- tibble(variable = summary_vars, 
+stats <- tibble(variable = summary_vars, 
              results = map(variable, U_test), 
              p_value = map_dbl(results, pluck, "p.value"))
+
+p_cutoffs <- c(0.1, 0.05, 0.01)
 ```
 
-```{r, echo = FALSE}
-knitr::kable(p_vals[, c("variable", "p_value")])
+## Display Table 1
+
+```{r, results = "asis"}
+summary_out %>%
+    mutate(mean = paste(pander::add.significance.stars(stats$p_value, 
+                                                        cutoffs = p_cutoffs), mean)) %>% 
+    gt() %>%
+    tab_spanner(label = "primed rich", 
+                columns = c("obs", "mean", "sd")) %>%
+    tab_spanner(label = "primed poor", 
+                columns = c("obs.", "mean.", "sd.")) %>%
+    as_raw_html()
 ```
 
+Stars (`*`, `* *`, `* * *`) indicate signifance at the `r p_cutoffs` levels, respectively.
