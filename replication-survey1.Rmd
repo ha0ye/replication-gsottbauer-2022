@@ -82,7 +82,8 @@ left_join(summary_rich, summary_poor, by = "set",
     tab_spanner(label = "primed rich", 
                 columns = c("obs", "mean", "sd")) %>%
     tab_spanner(label = "primed poor", 
-                columns = c("obs.", "mean.", "sd."))
+                columns = c("obs.", "mean.", "sd.")) %>%
+    as_raw_html()
 ```
 
 
