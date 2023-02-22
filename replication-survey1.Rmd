@@ -47,7 +47,7 @@ dat_study1 <- df_study1 %>%
 ```
 
 ## Generate Table 1 (sample summary statistics - survey 1)
-```{r}
+```{r, results = "asis"}
 summary_vars <- c("income", "male", "age", "edu", "married", 
                   "student", "religiousness", "east", "leftright")
 
@@ -83,7 +83,6 @@ left_join(summary_rich, summary_poor, by = "set",
                 columns = c("obs", "mean", "sd")) %>%
     tab_spanner(label = "primed poor", 
                 columns = c("obs.", "mean.", "sd."))
-    
 ```
 
 
