@@ -27,6 +27,25 @@ library(tidyverse)
     ## ℹ Use the ]8;;http://conflicted.r-lib.org/conflicted package]8;; to force all conflicts to become errors
 
 ``` r
+library(scales)
+```
+
+    ## 
+    ## Attaching package: 'scales'
+    ## 
+    ## The following object is masked from 'package:purrr':
+    ## 
+    ##     discard
+    ## 
+    ## The following object is masked from 'package:readr':
+    ## 
+    ##     col_factor
+    ## 
+    ## The following objects are masked from 'package:psych':
+    ## 
+    ##     alpha, rescale
+
+``` r
 library(gt)
 library(pander)
 ```
@@ -116,7 +135,7 @@ stats <- tibble(variable = summary_vars,
 p_cutoffs <- c(0.1, 0.05, 0.01)
 ```
 
-## Display Table 1
+## Table 1
 
 ``` r
 summary_out %>%
@@ -222,3 +241,20 @@ summary_out %>%
 
 Stars (`*`, `* *`, `* * *`) indicate signifance at the 0.1, 0.05, 0.01
 levels, respectively.
+
+## Figure 2
+
+``` r
+ggplot(dat_study1) + 
+    aes(x = payment, y = ..ncount.. / sum(..ncount..)) + 
+    geom_histogram(bins = 11, color = "black") + 
+    geom_hline(yintercept = 1/11, linetype = "dashed") + 
+    scale_y_continuous(labels = percent_format()) + 
+    theme_bw()
+```
+
+    ## Warning: The dot-dot notation (`..ncount..`) was deprecated in ggplot2 3.4.0.
+    ## ℹ Please use `after_stat(ncount)` instead.
+
+![Histogram of Individual
+Payments](replication-survey1_files/figure-gfm/unnamed-chunk-4-1.png)
