@@ -56,6 +56,7 @@ folder. All paths are thus local to that.
 
 ``` r
 datafile_survey_1 <- here::here("data", "MasterFile_Survey1.dta")
+datafile_survey_2 <- here::here("data", "Online_Data_Survey2.dta")
 ```
 
 # Survey 1 (German Internet Panel)
@@ -300,3 +301,88 @@ xx %>%
 ```
 
 ![](replication-survey1_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
+
+# Survey 2
+
+## Read in data
+
+``` r
+# load data - labels will be lost
+df_study2 <- read.dta13(file = datafile_survey_2, 
+                        convert.factors = TRUE, 
+                        nonint.factors = TRUE)
+```
+
+## Recoding
+
+``` r
+dat_study2 <- df_study2 %>%
+    mutate(income = case_match(q37, 
+                               1 ~ 75, 
+                               2 ~ 275, 
+                               3 ~ 700, 
+                               4 ~ 1250, 
+                               5 ~ 1750, 
+                               6 ~ 2250, 
+                               7 ~ 2750, 
+                               8 ~ 3250, 
+                               9 ~ 3750, 
+                               10 ~ 4250, 
+                               11 ~ 4750, 
+                               12 ~ 5250, 
+                               13 ~ 5750, 
+                               14 ~ 6750, 
+                               15 ~ 0, 
+                               .default = NA) + 
+               case_match(q38, 
+                          1 ~ 8750, 
+                          2 ~ 12500, 
+                          3 ~ 17500, 
+                          4 ~ 25000, 
+                          .default = 0), 
+           male = case_match(q7, 
+                             1 ~ 100, 
+                             2 ~ 0, 
+                             .default = 0), 
+           age = 88 - q8*5, 
+           edu = case_match(q10, 
+                            7 ~ 4, 
+                            .default = q10), 
+           married = case_match(q12, 
+                                1 ~ 100, 
+                                .default = 0), 
+           student = case_match(q11, 
+                                1 ~ 100, 
+                                .default = 0), 
+           religiousness = q13, 
+           east = as.numeric(substr(df_study2$q31, 1, 1) < 2) * 100,
+           leftright = q14, 
+           priming = case_match(treatment, 
+                                "Primed_poor" ~ "primed poor", 
+                                "Primed_rich" ~ "primed rich", 
+                                .default = "control"))
+```
+
+## Generate Table 2 (sample summary statistics - survey 1)
+
+``` r
+summary_vars <- c("income", "male", "age", "edu", "married", 
+                  "student", "religiousness", "east", "leftright")
+
+
+# generate separate tables for primed poor and primed rich
+dat_rich <- dat_study2 %>% filter(priming == "primed rich")
+dat_poor <- dat_study2 %>% filter(priming == "primed poor")
+dat_control <- dat_study2 %>% filter(priming == "control")
+
+summary_rich <- make_summary_table(dat_rich)
+summary_poor <- make_summary_table(dat_poor)
+summary_control <- make_summary_table(dat_control)
+summary_out <- summary_rich %>%
+    left_join(summary_poor, by = "set", 
+              suffix = c("", ".")) %>%
+    left_join(summary_control, by = "set", 
+              suffix = c("", "..")) %>%
+    mutate_at(vars(-"set"), ~(round(., digits = 1))) %>%
+    rename(variable = set)
+```
