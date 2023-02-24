@@ -149,17 +149,16 @@ income_labels <- c("less than 150 Euro",
                    "5000 to less than 7500 Euro",
                    "7500 Euro and more")
 
-xx <- dat_study1 %>%
-    mutate(income = factor(dat_study1$income, 
-                           labels = income_labels))
+to_plot <- dat_study1 %>%
+    mutate(income = factor(income, labels = income_labels))
 
-counts <- xx %>%
+counts <- to_plot %>%
     count(income, priming) %>%
     mutate(pos = case_when(priming == "primed poor" ~ 0.9,
                            priming == "primed rich" ~ 0.1))
 
-xx %>%
-    ggplot(aes(x = as.factor(income), group = priming)) + 
+to_plot %>%
+    ggplot(aes(x = income, group = priming)) + 
     geom_bar(aes(fill = priming), position = "fill") + 
     geom_text(data = counts, aes(y = pos, label = n)) + 
     coord_flip() + 
@@ -290,3 +289,41 @@ summary_out %>%
 
 Stars (`*`, `* *`, `* * *`) indicate significance (between the rich and control OR between the poor and control conditions) at the `r p_cutoffs` levels, respectively. Daggers (`†`, `† †`, `† † †`) indicate significance (between the rich and poor conditions) at the `r p_cutoffs` levels, respectively. 
 
+## Figure A1.1
+
+To create figure A1.1, convert income into a factor variable with proper labels, then generate counts, and plot the data.
+
+```{r}
+income_labels <- c("less than 150 Euro",
+                   "150 to less than 400 Euro",
+                   "400 to less than 1000 Euro",
+                   "1000 to less than 1500 Euro",
+                   "1500 to less than 2000 Euro",
+                   "2000 to less than 2500 Euro",
+                   "2500 to less than 3000 Euro",
+                   "3000 to less than 3500 Euro",
+                   "3500 to less than 4000 Euro",
+                   "4000 to less than 4500 Euro",
+                   "4500 to less than 5000 Euro",
+                   "5000 to less than 5500 Euro",
+                   "5500 to less than 6000 Euro",
+                   "5000 to less than 7500 Euro",
+                   "7500 Euro and more")
+
+to_plot <- dat_study2 %>%
+    mutate(income = factor(q37, labels = income_labels))
+
+counts <- to_plot %>%
+    count(income, priming) %>%
+    mutate(pos = case_when(priming == "primed poor" ~ 0.5,
+                           priming == "primed rich" ~ 0.1, 
+                           .default = 0.9))
+
+to_plot %>%
+    ggplot(aes(x = income, group = priming)) + 
+    geom_bar(aes(fill = priming), position = "fill") + 
+    geom_text(data = counts, aes(y = pos, label = n)) + 
+    coord_flip() + 
+    theme_bw() + 
+    ylab("Proportion") + xlab("Income Group")
+```
