@@ -101,7 +101,7 @@ p_cutoffs <- c(0.1, 0.05, 0.01)
 
 ## Table 1
 
-```{r, results = "asis"}
+```{r table 1, results = "asis"}
 summary_out %>%
     mutate(mean = paste(pander::add.significance.stars(stats$p_value, 
                                                         cutoffs = p_cutoffs), mean)) %>% 
@@ -113,7 +113,7 @@ summary_out %>%
     as_raw_html()
 ```
 
-Stars (`*`, `* *`, `* * *`) indicate signifance at the `r p_cutoffs` levels, respectively.
+Stars (`*`, `* *`, `* * *`) indicate significance (between the rich and poor conditions) at the `r p_cutoffs` levels, respectively.
 
 ## Figure 2
 
@@ -250,4 +250,43 @@ summary_out <- summary_rich %>%
     mutate_at(vars(-"set"), ~(round(., digits = 1))) %>%
     rename(variable = set)
 ```
+
+## Wilcox-Rank-Sum tests for Table 2
+
+```{r summary tests survey 2}
+p_cutoffs <- c(0.1, 0.05, 0.01)
+
+stats <- tibble(variable = summary_vars, 
+             results_rich_control = map(variable, U_test, dat_rich, dat_control),
+             results_poor_control = map(variable, U_test, dat_poor, dat_control),
+             results_rich_poor = map(variable, U_test, dat_rich, dat_poor), 
+             p_value_rich_control = map_dbl(results_rich_control, pluck, "p.value"), 
+             p_value_poor_control = map_dbl(results_poor_control, pluck, "p.value"), 
+             p_value_rich_poor = map_dbl(results_rich_poor, pluck, "p.value"), 
+             stars_rich_control = pander::add.significance.stars(p_value_rich_control,
+                                                                 cutoffs = p_cutoffs), 
+             stars_poor_control = pander::add.significance.stars(p_value_poor_control,
+                                                                 cutoffs = p_cutoffs), 
+             stars_rich_poor = gsub("\\*", "†", 
+                                    pander::add.significance.stars(p_value_rich_poor,
+                                                                 cutoffs = p_cutoffs)))
+```
+
+## Table 2
+
+```{r table 2, results = "asis"}
+summary_out %>%
+    mutate(mean = paste(stats$stars_rich_control, stats$stars_rich_poor, mean), 
+           `mean.` = paste(stats$stars_poor_control, `mean.`)) %>% 
+    gt() %>%
+    tab_spanner(label = "primed rich", 
+                columns = c("obs", "mean", "sd")) %>%
+    tab_spanner(label = "primed poor", 
+                columns = c("obs.", "mean.", "sd.")) %>%
+    tab_spanner(label = "control", 
+                columns = c("obs..", "mean..", "sd..")) %>%
+    as_raw_html()
+```
+
+Stars (`*`, `* *`, `* * *`) indicate significance (between the rich and control OR between the poor and control conditions) at the `r p_cutoffs` levels, respectively. Daggers (`†`, `† †`, `† † †`) indicate significance (between the rich and poor conditions) at the `r p_cutoffs` levels, respectively. 
 
