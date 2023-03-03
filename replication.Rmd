@@ -178,14 +178,15 @@ plot_randomization_by_income(to_plot, counts)
 Manipulation Check (y-axis) vs Income, grouped by "Primed-Rich" and "Primed-Poor"
 
 ```{r}
-plot_manipulation_vs_income <- function(df)
+plot_var_vs_income <- function(df, var)
 {
     df %>%
         filter(priming %in% c("primed rich", "primed poor")) %>%
         group_by(income, priming) %>%
-        summarize(manip = mean(manip, na.rm = TRUE)) %>% 
+        summarize("{{var}}" := mean({{var}}, na.rm = TRUE), 
+                  .groups = "drop") %>% 
         mutate(priming = fct_relevel(priming, c("primed rich", "primed poor"))) %>%
-        ggplot(aes(x = income, y = manip, 
+        ggplot(aes(x = income, y = {{var}}, 
                    fill = priming, color = priming, shape = priming)) + 
         geom_point(size = 2) + 
         scale_shape_manual(values = c(19, 23)) + 
@@ -193,12 +194,23 @@ plot_manipulation_vs_income <- function(df)
         scale_color_manual(values = c("black", "grey80")) + 
         theme_bw()
 }
+```
 
-plot_manipulation_vs_income(dat_study1) + 
+```{r}
+plot_var_vs_income(dat_study1, manip) + 
     scale_x_continuous(breaks = seq(from = 1000, to = 9000, by = 1000)) + 
     scale_y_continuous(limits = c(4, 8))
 ```
 
+## Figure A3.1
+
+Payments vs. Income, grouped by "Primed-Rich" and "Primed-Poor"
+
+```{r}
+plot_var_vs_income(dat_study1, payment) + 
+    scale_x_continuous(breaks = seq(from = 1000, to = 9000, by = 1000)) + 
+    scale_y_continuous(limits = c(6, 14))
+```
 
 # Survey 2
 
@@ -262,7 +274,8 @@ dat_study2 <- df_study2 %>%
            manip = 11 - select(., q4_1:q4_10) %>%
                mutate_all(~. == "On") %>%
                as.matrix() %>%
-               apply(1, which))
+               apply(1, which), 
+           payment = payoff)
 ```
 
 ## Generate Table 2 (sample summary statistics - survey 1)
@@ -349,7 +362,17 @@ plot_randomization_by_income(to_plot, counts)
 Manipulation Check (y-axis) vs Income, grouped by "Primed-Rich" and "Primed-Poor"
 
 ```{r}
-plot_manipulation_vs_income(dat_study2) + 
-            scale_x_continuous(breaks = seq(from = 5000, to = 25000, by = 5000)) + 
-        scale_y_continuous(breaks = 4:10)
+plot_var_vs_income(dat_study2, manip) + 
+    scale_x_continuous(breaks = seq(from = 5000, to = 25000, by = 5000)) + 
+    scale_y_continuous(breaks = 4:10)
+```
+
+## Figure A3.2
+
+Payments vs. Income, grouped by "Primed-Rich" and "Primed-Poor"
+
+```{r}
+plot_var_vs_income(dat_study2, payment) + 
+    scale_x_continuous(breaks = seq(from = 5000, to = 25000, by = 5000)) + 
+    scale_y_continuous(limits = c(6, 16))
 ```

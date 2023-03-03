@@ -314,33 +314,47 @@ Manipulation Check (y-axis) vs Income, grouped by “Primed-Rich” and
 “Primed-Poor”
 
 ``` r
-plot_manipulation_vs_income <- function(df)
+plot_var_vs_income <- function(df, var)
 {
     df %>%
         filter(priming %in% c("primed rich", "primed poor")) %>%
         group_by(income, priming) %>%
-        summarize(manip = mean(manip, na.rm = TRUE)) %>% 
+        summarize("{{var}}" := mean({{var}}, na.rm = TRUE), 
+                  .groups = "drop") %>% 
         mutate(priming = fct_relevel(priming, c("primed rich", "primed poor"))) %>%
-        ggplot(aes(x = income, y = manip, 
+        ggplot(aes(x = income, y = {{var}}, 
                    fill = priming, color = priming, shape = priming)) + 
         geom_point(size = 2) + 
         scale_shape_manual(values = c(19, 23)) + 
         scale_fill_manual(values = c("black", "grey80")) + 
         scale_color_manual(values = c("black", "grey80")) + 
-        scale_x_continuous(breaks = seq(from = 1000, to = 9000, by = 1000)) + 
-        scale_y_continuous(limits = c(4, 8)) + 
         theme_bw()
 }
-
-plot_manipulation_vs_income(dat_study1)
 ```
 
-    ## `summarise()` has grouped output by 'income'. You can override using the
-    ## `.groups` argument.
+``` r
+plot_var_vs_income(dat_study1, manip) + 
+    scale_x_continuous(breaks = seq(from = 1000, to = 9000, by = 1000)) + 
+    scale_y_continuous(limits = c(4, 8))
+```
 
     ## Warning: Removed 2 rows containing missing values (`geom_point()`).
 
-![](replication_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
+![](replication_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
+
+## Figure A3.1
+
+Payments vs. Income, grouped by “Primed-Rich” and “Primed-Poor”
+
+``` r
+plot_var_vs_income(dat_study1, payment) + 
+    scale_x_continuous(breaks = seq(from = 1000, to = 9000, by = 1000)) + 
+    scale_y_continuous(limits = c(6, 14))
+```
+
+    ## Warning: Removed 2 rows containing missing values (`geom_point()`).
+
+![](replication_files/figure-gfm/unnamed-chunk-7-1.png)<!-- -->
 
 # Survey 2
 
@@ -401,10 +415,11 @@ dat_study2 <- df_study2 %>%
                                 "Primed_poor" ~ "primed poor", 
                                 "Primed_rich" ~ "primed rich", 
                                 .default = "control"), 
-           manip = select(., q4_1:q4_10) %>%
+           manip = 11 - select(., q4_1:q4_10) %>%
                mutate_all(~. == "On") %>%
                as.matrix() %>%
-               apply(1, which))
+               apply(1, which), 
+           payment = payoff)
 ```
 
 ## Generate Table 2 (sample summary statistics - survey 1)
@@ -615,7 +630,7 @@ counts <- to_plot %>%
 plot_randomization_by_income(to_plot, counts)
 ```
 
-![](replication_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
+![](replication_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
 
 ## Figure A2.2
 
@@ -623,12 +638,21 @@ Manipulation Check (y-axis) vs Income, grouped by “Primed-Rich” and
 “Primed-Poor”
 
 ``` r
-plot_manipulation_vs_income(dat_study2)
+plot_var_vs_income(dat_study2, manip) + 
+    scale_x_continuous(breaks = seq(from = 5000, to = 25000, by = 5000)) + 
+    scale_y_continuous(breaks = 4:10)
 ```
 
-    ## `summarise()` has grouped output by 'income'. You can override using the
-    ## `.groups` argument.
+![](replication_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->
 
-    ## Warning: Removed 7 rows containing missing values (`geom_point()`).
+## Figure A3.2
 
-![](replication_files/figure-gfm/unnamed-chunk-7-1.png)<!-- -->
+Payments vs. Income, grouped by “Primed-Rich” and “Primed-Poor”
+
+``` r
+plot_var_vs_income(dat_study2, payment) + 
+    scale_x_continuous(breaks = seq(from = 5000, to = 25000, by = 5000)) + 
+    scale_y_continuous(limits = c(6, 16))
+```
+
+![](replication_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->
