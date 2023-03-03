@@ -78,11 +78,13 @@ dat_study1 <- df_study1 %>%
     mutate(priming = case_match(priming, 
                                 0 ~ "primed poor", 
                                 1 ~ "primed rich"), 
-           income = income * 1000, 
+           income = round(income * 1000), 
            male = male * 100, 
            married = married * 100, 
            student = student * 100, 
-           east = east * 100)
+           east = east * 100, 
+           manip = gsub("[0-9]+\\.\\s+([0-9]+)", "\\1", manip) %>%
+               as.numeric())
 ```
 
 ## Generate Table 1 (sample summary statistics - survey 1)
@@ -282,6 +284,17 @@ income_labels <- c("less than 150 Euro",
                    "5000 to less than 7500 Euro",
                    "7500 Euro and more")
 
+plot_randomization_by_income <- function(to_plot, counts)
+{
+    to_plot %>%
+    ggplot(aes(x = income, group = priming)) + 
+    geom_bar(aes(fill = priming), position = "fill") + 
+    geom_text(data = counts, aes(y = pos, label = n)) + 
+    coord_flip() + 
+    theme_bw() + 
+    ylab("Proportion") + xlab("Income Group")
+}
+
 to_plot <- dat_study1 %>%
     mutate(income = factor(income, labels = income_labels))
 
@@ -290,16 +303,44 @@ counts <- to_plot %>%
     mutate(pos = case_when(priming == "primed poor" ~ 0.9,
                            priming == "primed rich" ~ 0.1))
 
-to_plot %>%
-    ggplot(aes(x = income, group = priming)) + 
-    geom_bar(aes(fill = priming), position = "fill") + 
-    geom_text(data = counts, aes(y = pos, label = n)) + 
-    coord_flip() + 
-    theme_bw() + 
-    ylab("Proportion") + xlab("Income Group")
+plot_randomization_by_income(to_plot, counts)
 ```
 
 ![](replication_files/figure-gfm/unnamed-chunk-4-1.png)<!-- -->
+
+## Figure A2.1
+
+Manipulation Check (y-axis) vs Income, grouped by “Primed-Rich” and
+“Primed-Poor”
+
+``` r
+plot_manipulation_vs_income <- function(df)
+{
+    df %>%
+        filter(priming %in% c("primed rich", "primed poor")) %>%
+        group_by(income, priming) %>%
+        summarize(manip = mean(manip, na.rm = TRUE)) %>% 
+        mutate(priming = fct_relevel(priming, c("primed rich", "primed poor"))) %>%
+        ggplot(aes(x = income, y = manip, 
+                   fill = priming, color = priming, shape = priming)) + 
+        geom_point(size = 2) + 
+        scale_shape_manual(values = c(19, 23)) + 
+        scale_fill_manual(values = c("black", "grey80")) + 
+        scale_color_manual(values = c("black", "grey80")) + 
+        scale_x_continuous(breaks = seq(from = 1000, to = 9000, by = 1000)) + 
+        scale_y_continuous(limits = c(4, 8)) + 
+        theme_bw()
+}
+
+plot_manipulation_vs_income(dat_study1)
+```
+
+    ## `summarise()` has grouped output by 'income'. You can override using the
+    ## `.groups` argument.
+
+    ## Warning: Removed 2 rows containing missing values (`geom_point()`).
+
+![](replication_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
 
 # Survey 2
 
@@ -359,7 +400,11 @@ dat_study2 <- df_study2 %>%
            priming = case_match(treatment, 
                                 "Primed_poor" ~ "primed poor", 
                                 "Primed_rich" ~ "primed rich", 
-                                .default = "control"))
+                                .default = "control"), 
+           manip = select(., q4_1:q4_10) %>%
+               mutate_all(~. == "On") %>%
+               as.matrix() %>%
+               apply(1, which))
 ```
 
 ## Generate Table 2 (sample summary statistics - survey 1)
@@ -567,13 +612,23 @@ counts <- to_plot %>%
                            priming == "primed rich" ~ 0.1, 
                            .default = 0.9))
 
-to_plot %>%
-    ggplot(aes(x = income, group = priming)) + 
-    geom_bar(aes(fill = priming), position = "fill") + 
-    geom_text(data = counts, aes(y = pos, label = n)) + 
-    coord_flip() + 
-    theme_bw() + 
-    ylab("Proportion") + xlab("Income Group")
+plot_randomization_by_income(to_plot, counts)
 ```
 
-![](replication_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
+![](replication_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
+
+## Figure A2.2
+
+Manipulation Check (y-axis) vs Income, grouped by “Primed-Rich” and
+“Primed-Poor”
+
+``` r
+plot_manipulation_vs_income(dat_study2)
+```
+
+    ## `summarise()` has grouped output by 'income'. You can override using the
+    ## `.groups` argument.
+
+    ## Warning: Removed 7 rows containing missing values (`geom_point()`).
+
+![](replication_files/figure-gfm/unnamed-chunk-7-1.png)<!-- -->
