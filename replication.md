@@ -356,6 +356,34 @@ plot_var_vs_group(dat_study1, payment) +
 
 ![](replication_files/figure-gfm/unnamed-chunk-7-1.png)<!-- -->
 
+## Figure A4.1
+
+Payments vs. Age, grouped by “Primed-Rich” and “Primed-Poor”
+
+``` r
+plot_var_vs_group(dat_study1, payment, age) + 
+    scale_x_continuous(breaks = seq(from = 17, to = 82, by = 10)) + 
+    scale_y_continuous(limits = c(6, 16))
+```
+
+    ## Warning: Removed 2 rows containing missing values (`geom_point()`).
+
+![](replication_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
+
+## Figure A4.3
+
+Payments vs. Education, grouped by “Primed-Rich” and “Primed-Poor”
+
+``` r
+plot_var_vs_group(dat_study1, payment, edu) + 
+#    scale_x_continuous(breaks = seq(from = 17, to = 82, by = 10)) + 
+    scale_y_continuous(limits = c(6, 16))
+```
+
+    ## Warning: Removed 2 rows containing missing values (`geom_point()`).
+
+![](replication_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->
+
 # Survey 2
 
 ## Read in data
@@ -630,7 +658,7 @@ counts <- to_plot %>%
 plot_randomization_by_income(to_plot, counts)
 ```
 
-![](replication_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
+![](replication_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->
 
 ## Figure A2.2
 
@@ -643,7 +671,7 @@ plot_var_vs_group(dat_study2, manip) +
     scale_y_continuous(breaks = 4:10)
 ```
 
-![](replication_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->
+![](replication_files/figure-gfm/unnamed-chunk-11-1.png)<!-- -->
 
 ## Figure A3.2
 
@@ -655,7 +683,7 @@ plot_var_vs_group(dat_study2, payment) +
     scale_y_continuous(limits = c(6, 16))
 ```
 
-![](replication_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->
+![](replication_files/figure-gfm/unnamed-chunk-12-1.png)<!-- -->
 
 The labels appear reversed from Figure A3.2 in the appendix. Let’s check
 with the raw values for the income == 17,500 group. Note the income
@@ -685,3 +713,27 @@ So the `Primed_poor` group has an average payoff of 12 and the
 
 This matches our replication figure, which indeed has reversed labels
 from the appendix figure A3.2.
+
+## Figure A4.2
+
+Payments vs. Age, grouped by “Primed-Rich” and “Primed-Poor”
+
+``` r
+plot_var_vs_group(dat_study2, payment, age) + 
+    scale_x_continuous(breaks = seq(from = 17, to = 82, by = 10)) + 
+    scale_y_continuous(limits = c(6, 16))
+```
+
+![](replication_files/figure-gfm/unnamed-chunk-14-1.png)<!-- -->
+
+## Figure A4.4
+
+Payments vs. Education, grouped by “Primed-Rich” and “Primed-Poor”
+
+``` r
+plot_var_vs_group(dat_study2, payment, edu) + 
+#    scale_x_continuous(breaks = seq(from = 17, to = 82, by = 10)) + 
+    scale_y_continuous(limits = c(6, 16))
+```
+
+![](replication_files/figure-gfm/unnamed-chunk-15-1.png)<!-- -->
