@@ -314,15 +314,15 @@ Manipulation Check (y-axis) vs Income, grouped by “Primed-Rich” and
 “Primed-Poor”
 
 ``` r
-plot_var_vs_income <- function(df, var)
+plot_var_vs_group <- function(df, var, group = income)
 {
     df %>%
         filter(priming %in% c("primed rich", "primed poor")) %>%
-        group_by(income, priming) %>%
+        group_by({{group}}, priming) %>%
         summarize("{{var}}" := mean({{var}}, na.rm = TRUE), 
                   .groups = "drop") %>% 
         mutate(priming = fct_relevel(priming, c("primed rich", "primed poor"))) %>%
-        ggplot(aes(x = income, y = {{var}}, 
+        ggplot(aes(x = {{group}}, y = {{var}}, 
                    fill = priming, color = priming, shape = priming)) + 
         geom_point(size = 2) + 
         scale_shape_manual(values = c(19, 23)) + 
@@ -333,7 +333,7 @@ plot_var_vs_income <- function(df, var)
 ```
 
 ``` r
-plot_var_vs_income(dat_study1, manip) + 
+plot_var_vs_group(dat_study1, manip) + 
     scale_x_continuous(breaks = seq(from = 1000, to = 9000, by = 1000)) + 
     scale_y_continuous(limits = c(4, 8))
 ```
@@ -347,7 +347,7 @@ plot_var_vs_income(dat_study1, manip) +
 Payments vs. Income, grouped by “Primed-Rich” and “Primed-Poor”
 
 ``` r
-plot_var_vs_income(dat_study1, payment) + 
+plot_var_vs_group(dat_study1, payment) + 
     scale_x_continuous(breaks = seq(from = 1000, to = 9000, by = 1000)) + 
     scale_y_continuous(limits = c(6, 14))
 ```
@@ -638,7 +638,7 @@ Manipulation Check (y-axis) vs Income, grouped by “Primed-Rich” and
 “Primed-Poor”
 
 ``` r
-plot_var_vs_income(dat_study2, manip) + 
+plot_var_vs_group(dat_study2, manip) + 
     scale_x_continuous(breaks = seq(from = 5000, to = 25000, by = 5000)) + 
     scale_y_continuous(breaks = 4:10)
 ```
@@ -650,9 +650,38 @@ plot_var_vs_income(dat_study2, manip) +
 Payments vs. Income, grouped by “Primed-Rich” and “Primed-Poor”
 
 ``` r
-plot_var_vs_income(dat_study2, payment) + 
+plot_var_vs_group(dat_study2, payment) + 
     scale_x_continuous(breaks = seq(from = 5000, to = 25000, by = 5000)) + 
     scale_y_continuous(limits = c(6, 16))
 ```
 
 ![](replication_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->
+
+The labels appear reversed from Figure A3.2 in the appendix. Let’s check
+with the raw values for the income == 17,500 group. Note the income
+filter is based on the coding scheme in file `Supplementary-Survey2.Rmd`
+in the replication package.
+
+``` r
+dat_subset <- df_study2 %>% 
+    filter(q37==15, q38==3) %>% # income filter
+    select(q37, q38, treatment, payoff) %>%
+    arrange(treatment)
+
+knitr::kable(dat_subset)
+```
+
+| q37 | q38 | treatment   | payoff |
+|----:|----:|:------------|-------:|
+|  15 |   3 | Primed_poor |     16 |
+|  15 |   3 | Primed_poor |      8 |
+|  15 |   3 | Primed_rich |     10 |
+|  15 |   3 | Primed_rich |     20 |
+|  15 |   3 | Primed_rich |     10 |
+|  15 |   3 | control     |     16 |
+
+So the `Primed_poor` group has an average payoff of 12 and the
+`Primed_rich` has an average payoff of 13.3333333.
+
+This matches our replication figure, which indeed has reversed labels
+from the appendix figure A3.2.
