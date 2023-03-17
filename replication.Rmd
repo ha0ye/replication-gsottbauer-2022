@@ -104,18 +104,24 @@ p_cutoffs <- c(0.1, 0.05, 0.01)
 ## Table 1
 
 ```{r table 1, results = "asis"}
-summary_out %>%
+table_1 <- summary_out %>%
     mutate(mean = paste(pander::add.significance.stars(stats$p_value, 
                                                         cutoffs = p_cutoffs), mean)) %>% 
     gt() %>%
-    tab_spanner(label = "primed rich", 
+    tab_spanner(label = "primed rich",
                 columns = c("obs", "mean", "sd")) %>%
-    tab_spanner(label = "primed poor", 
+    tab_spanner(label = "primed poor",
                 columns = c("obs.", "mean.", "sd.")) %>%
-    as_raw_html()
+    cols_align(align = "right", "mean")
+
+table_1 %>% as_raw_html()
 ```
 
 Stars (`*`, `* *`, `* * *`) indicate significance (between the rich and poor conditions) at the `r p_cutoffs` levels, respectively.
+
+```{r table 1 tex output}
+table_1 %>% as_latex() %>% write_lines(file = here::here("tex", "table_1.tex"))
+```
 
 ## Figure 2
 
