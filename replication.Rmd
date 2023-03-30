@@ -389,6 +389,7 @@ Stars (`*`, `* *`, `* * *`) indicate significance (between the rich and control 
 table_2 %>% as_latex() %>% write_lines(file = here::here("out", "table_2.tex"))
 ```
 
+*Note*: Observe that the mean religiousness for the "Primed-rich" treatment group is reported here as 3.8, whereas it is 3.9 in Table 2 of the original publication. Doing the calculation and reporting it with higher precision, we compute the mean as `r dat_study2 %>% filter(priming == "primed rich") %>% pull(religiousness) %>% mean()`.
 
 ## Figure A1.2
 

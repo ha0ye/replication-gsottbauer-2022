@@ -690,6 +690,11 @@ significance (between the rich and poor conditions) at the 0.1, 0.05,
 table_2 %>% as_latex() %>% write_lines(file = here::here("out", "table_2.tex"))
 ```
 
+*Note*: Observe that the mean religiousness for the “Primed-rich”
+treatment group is reported here as 3.8, whereas it is 3.9 in Table 2 of
+the original publication. Doing the calculation and reporting it with
+higher precision, we compute the mean as 3.8484556.
+
 ## Figure A1.2
 
 To create figure A1.2, convert income into a factor variable with proper
@@ -760,6 +765,9 @@ dat_subset <- df_study2 %>%
     filter(q37==15, q38==3) %>% # income filter
     select(q37, q38, treatment, payoff) %>%
     arrange(treatment)
+
+knitr::kable(dat_subset, format = "latex") %>%
+    write_lines(here::here("out", "table_a3.2_check.tex"))
 
 knitr::kable(dat_subset)
 ```
