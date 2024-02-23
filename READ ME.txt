@@ -1,0 +1,7 @@
+Do-File Contents for Gsottbauer et al, 2022 EJ replication:
+
+Results_S1: Tables 3, 4, 5 & A2.1; Figures 2, 3, A3.3, A3.5
+Results_S2: Tables 8 & A2.2; Figures 4, 5, A3.4 & A3.6
+Results_SBelief: Table 9
+
+Contact: Fabian.Mierisch@ku.de
